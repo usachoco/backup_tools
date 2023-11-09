@@ -1,0 +1,5 @@
+pyyaml
+gitpython
+beautifulsoup4
+tqdm
+requests
