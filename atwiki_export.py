@@ -13,8 +13,8 @@ with open(config_path, 'r') as f:
 user = config['git_username']
 email = config['git_email']
 passwd = config['git_token']
-account = config['atwiki_name']
 target_repo = config['git_target_repo']
+account = config['atwiki_name']
 
 # repository 初期化
 repo_path = os.path.join(script_dir, 'repo')
@@ -90,22 +90,27 @@ def write_to_local(name, text):
 
 
 if __name__ == "__main__":
-    page_list = get_page_list()
-    try :
-        for page_name, page_id in tqdm.tqdm(page_list):
-            """
-            @wiki アクセス規制検証
-            5秒 = 規制弱で規制されることを確認しています
-            10秒 = 規制強で規制されないことを確認しています
-            """
-            time.sleep(10)
-            source = get_source(page_id)
-            if source == "":
-                raise ValueError()
-            write_to_local(page_name, source)
-        print("complete")
-        repo.git.add(data_path)
-        repo.index.commit("こんにちは！牛")
-        repo.remote(name='origin').push()
-    except ValueError:
-        print(f"ソース名「 {page_name} 」を取得できませんでした")
+# ToDo
+#   secret.yaml が共有されているので開発中にリポジトリがうっかり壊れる予感しかしない
+#   次回動かす前にちゃんと整理すること
+#
+#
+#    page_list = get_page_list()
+#    try :
+#        for page_name, page_id in tqdm.tqdm(page_list):
+#            """
+#            @wiki アクセス規制検証
+#            5秒 = 規制弱で規制されることを確認しています
+#            10秒 = 規制強で規制されないことを確認しています
+#            """
+#            time.sleep(10)
+#            source = get_source(page_id)
+#            if source == "":
+#                raise ValueError()
+#            write_to_local(page_name, source)
+#        print("complete")
+#        repo.git.add(data_path)
+#        repo.index.commit("こんにちは！牛")
+#        repo.remote(name='origin').push()
+#    except ValueError:
+#        print(f"ソース名「 {page_name} 」を取得できませんでした")
