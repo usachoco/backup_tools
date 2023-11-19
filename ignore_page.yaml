@@ -1,0 +1,11 @@
+ignore_page_list: 
+  - AutoTicketLinkName
+  - FrontPage
+  - InterWikiName
+  - information
+  - PukiWiki/1.4
+  - PukiWiki/1.4/Manual
+  - ROクエスト案内所
+  - RecentDeleted
+  - 削除履歴
+  - SandBox

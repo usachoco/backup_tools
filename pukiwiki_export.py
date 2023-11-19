@@ -15,6 +15,11 @@ config_path = os.path.join(script_dir, 'pukiwiki_secret.yaml')
 with open(config_path, 'r') as f:
     config = yaml.safe_load(f)
 
+# ignoreリスト読み込み
+ignore_path = os.path.join(script_dir, 'ignore_page.yaml')
+with open(ignore_path, 'r') as f:
+    ignore_list = yaml.safe_load(f)['ignore_page_list']
+
 # github 設定
 user = config['git_username']
 email = config['git_email']
@@ -61,13 +66,15 @@ def get_page_name_list():
     result = []
     page_list_url = base_url + "?cmd=list"
     response = sess.get(page_list_url, headers=headers)
-    if response.status_code == 200:
-        soup = BeautifulSoup(response.text, 'html.parser')
-        ul_tag = soup.find('ul')
-        if ul_tag:
-            a_tags = ul_tag.find_all('a', href=True, id=False)
-            for a_tag in a_tags:
-                page_name = a_tag.text.strip()
+    if response.status_code != 200:
+        return result
+    soup = BeautifulSoup(response.text, 'html.parser')
+    ul_tag = soup.find('ul')
+    if ul_tag:
+        a_tags = ul_tag.find_all('a', href=True, id=False)
+        for a_tag in a_tags:
+            page_name = a_tag.text.strip()
+            if page_name not in ignore_list:
                 result.append(page_name)
     return result
 
@@ -111,11 +118,16 @@ if __name__ == "__main__":
     page_list = get_page_name_list()
     for name in tqdm.tqdm(page_list):
         time.sleep(10)
-        text = get_source(name)
-        if text != "":
-            write_to_local(name, text)
-        else:
-            print(f"{name}:ソース読み込みに失敗しました。")
+        try:
+            text = ""
+            text = get_source(name)
+        except:
+            time.sleep(60)
+        finally:
+            if text != "":
+                write_to_local(name, text)
+            else:
+                print(f"\n{name}:ソース読み込みに失敗しました。")
     push_to_repository()
     print(f"コミット完了しました。")
     check_missing_file(page_list)
