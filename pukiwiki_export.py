@@ -12,12 +12,12 @@ from git import Repo
 # config 読み込み
 script_dir = os.path.dirname(os.path.abspath(__file__))
 config_path = os.path.join(script_dir, 'pukiwiki_secret.yaml')
-with open(config_path, 'r') as f:
+with open(config_path, 'r', encoding='utf8') as f:
     config = yaml.safe_load(f)
 
 # ignoreリスト読み込み
 ignore_path = os.path.join(script_dir, 'ignore_page.yaml')
-with open(ignore_path, 'r') as f:
+with open(ignore_path, 'r', encoding='utf8') as f:
     ignore_list = yaml.safe_load(f)['ignore_page_list']
 
 # github 設定
